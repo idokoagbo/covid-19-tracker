@@ -81,7 +81,7 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
 
           else {
             chat.add({
-              'question':'Call the NCDC hotline 080097000010',
+              'question':'It appears you are showing symptoms of Covid-19. Please contact your doctor immediately OR CDC to take an actual test. This report will be forwarded to the local CDC.',
               'answer':null,
             });
           }

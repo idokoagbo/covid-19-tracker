@@ -28,6 +28,7 @@ dependencies:
   intl: ^0.16.1
   shared_preferences: ^0.5.6+3
   pull_to_refresh: ^1.5.8
+  flutter_sim_country_code: ^0.0.3
 
 dev_dependencies:
   flutter_test:

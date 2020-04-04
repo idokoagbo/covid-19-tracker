@@ -14,6 +14,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
   int newRecovered=0;
   int newDeaths=0;
   Totals prevData;
+  String _platformVersion = 'Unknown';
 
   @override
   void initState() {
@@ -38,7 +39,27 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
     });
 
 //    _presenter.getTotal();
+    initPlatformState();
     super.initState();
+  }
+
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      platformVersion = await FlutterSimCountryCode.simCountryCode;
+    } catch (error){
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion;
+    });
   }
 
   SummaryScreenPresenter _presenter;
@@ -53,7 +74,12 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
   void _onRefresh() async{
     // monitor network fetch
     // if failed,use refreshFailed()
-    await _presenter.getTotal();
+    if(_platformVersion.length<4){
+      await _presenter.getCountryDataByCode(_platformVersion);
+    }else{
+      await _presenter.getTotal();
+    }
+
 //    _refreshController.refreshCompleted();
   }
 
@@ -61,12 +87,17 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
     // monitor network fetch
 //    await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    await _presenter.getTotal();
+    if(_platformVersion.length<4){
+      await _presenter.getCountryDataByCode(_platformVersion);
+    }else{
+      await _presenter.getTotal();
+    }
 //    _refreshController.loadComplete();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -87,30 +118,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
         enablePullDown: true,
         enablePullUp: false,
         header: ClassicHeader(),
-        footer: CustomFooter(
-          builder: (BuildContext context,LoadStatus mode){
-            Widget body ;
-            if(mode==LoadStatus.idle){
-              body =  Text("pull up load");
-            }
-            else if(mode==LoadStatus.loading){
-              body =  CircularProgressIndicator(backgroundColor: Colors.grey[500],);
-            }
-            else if(mode == LoadStatus.failed){
-              body = Text("Load Failed!Click retry!");
-            }
-            else if(mode == LoadStatus.canLoading){
-              body = Text("release to load more");
-            }
-            else{
-              body = Text("No more Data");
-            }
-            return Container(
-              height: 55.0,
-              child: Center(child:body),
-            );
-          },
-        ),
+        footer: ClassicFooter(),
         controller: _refreshController,
         onRefresh: _onRefresh,
         onLoading: _onLoading,
@@ -119,7 +127,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Tracker',style: GoogleFonts.tauri(textStyle: TextStyle(color: Colors.black,fontSize: 44,fontWeight: FontWeight.normal))),
+              Text('Reports - ${_platformVersion.length<4? _platformVersion : "global"}',style: GoogleFonts.tauri(textStyle: TextStyle(color: Colors.black,fontSize: 34,fontWeight: FontWeight.normal))),
 
               SizedBox(height: 10,),
               GlobalSituationCard(
