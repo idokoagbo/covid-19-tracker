@@ -69,7 +69,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
   }
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: false);
+  RefreshController(initialRefresh: true);
 
   void _onRefresh() async{
     // monitor network fetch
@@ -127,7 +127,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Reports - ${_platformVersion.length<4? _platformVersion : "global"}',style: GoogleFonts.tauri(textStyle: TextStyle(color: Colors.black,fontSize: 34,fontWeight: FontWeight.normal))),
+              Text('Reports - ${_platformVersion.length<4? _platformVersion.toUpperCase() : "Global"}',style: GoogleFonts.tauri(textStyle: TextStyle(color: Colors.black,fontSize: 34,fontWeight: FontWeight.normal))),
 
               SizedBox(height: 10,),
               GlobalSituationCard(

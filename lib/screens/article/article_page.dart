@@ -189,7 +189,6 @@ class Treatment extends StatelessWidget {
         _Heading('Steps to help prevent the spread of COVID-19 if you are sick'),
         _Paragraph('Follow the steps below: If you are sick with COVID-19 or think you might have COVID-19, follow the steps below to care for yourself and to help protect other people in your home and community.'),
         SizedBox(height: 10,),
-        Image.network("https://www.cdc.gov/coronavirus/2019-ncov/images/COVIDweb_02_bed.png"),
         _Heading("Stay home except to get medical care"),
         _Paragraph("Stay home: Most people with COVID-19 have mild illness and are able to recover at home without medical care. Do not leave your home, except to get medical care. Do not visit public areas."),
         _Paragraph("Stay in touch with your doctor. Call before you get medical care. Be sure to get care if you have trouble breathing, or have any other emergency warning signs, or if you think it is an emergency."),

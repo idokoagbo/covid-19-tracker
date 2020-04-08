@@ -67,21 +67,21 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
 
           else if (_points >=3 && _points <=5){
             chat.add({
-              'question':'Hydrate properly and practice proper personal hygiene. Observe and re-evaluate after 2 days.',
+              'question':'It is unlikely that you have been infected. However, hydrate properly and practice proper personal hygiene. Observe and re-evaluate after 2 days.',
               'answer':null,
             });
           }
 
           else if(_points >=6 && _points <=12 ){
             chat.add({
-              'question':'Seek a consultation with a doctor, immediately',
+              'question':'It is possible you may have been exposed to COVID-19, Seek a consultation with a doctor as soon as possible. In the mean time read our guide on what to do.',
               'answer':null,
             });
           }
 
           else {
             chat.add({
-              'question':'It appears you are showing symptoms of Covid-19. Please contact your doctor immediately OR CDC to take an actual test. This report will be forwarded to the local CDC.',
+              'question':'It appears you are showing symptoms of COVID-19. Please contact your doctor immediately OR CDC to take an actual test. This report will be forwarded to the local CDC.',
               'answer':null,
             });
           }
@@ -91,11 +91,11 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
       print("this is text: $message");
       responseController.clear();
     }
-//    _scrollController.animateTo(
-//      0.0,
-//      curve: Curves.easeOut,
-//      duration: const Duration(milliseconds: 300),
-//    );
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent+10,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   @override
@@ -104,8 +104,8 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
   }
 
    static const _covidQuestions= const[
-    "The purpose of the Coronavirus Self-Checker is to help you make decisions about seeking appropriate medical care. This system is not intended for the diagnosis or treatment of disease or other conditions, including COVID-19. Are you ready to begin?",
-    "If you are experiencing a life-threatening emergency, please call 911 immediately. This system does not replace the judgment of healthcare professionals or the performance of any clinical assessment.",
+    "The purpose of the Coronavirus Self-Checker is to help you make decisions about seeking appropriate medical care. This system is not intended for the diagnosis or treatment of disease or other conditions, including COVID-19.",
+    "If you are experiencing a life-threatening emergency, please call your local emergency services immediately. This system does not replace the judgment of healthcare professionals or the performance of any clinical assessment.",
     "To provide information on the right level of care, we are going to ask you a series of questions. Ready? Let’s get started",
     "Are you ill, or caring for someone who is ill?",
      "Do you have cough?",
@@ -118,7 +118,7 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
      "Are you having difficulty breathing?",
      "Are you experiencing fatique?",
      "Have you travelled within the last 14 days?",
-     "Do you stay or have recently travelled to a COVID-19 infected area?",
+     "Do you stay or have recently visited a COVID-19 infected area?",
      "Have you had direct contact with a positive COVID-19 patient?",
     "This Coronavirus Self-Checker system is for those who may be sick. Learn more about COVID-19 and what you can do to help by reading our guides in the help section.",
   ];
@@ -190,12 +190,6 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
             )
           ],
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.phone),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Container(
         width: double.infinity,
@@ -204,7 +198,10 @@ class __ExposureTestPageState extends State<_ExposureTestPage> {
           children: <Widget>[
             Expanded(
               child: Container(
-                child: ListView.builder(itemBuilder: (context,index){
+                child: ListView.builder(
+                  shrinkWrap:true,
+                  controller:_scrollController,
+                  itemBuilder: (context,index){
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical:8.0,horizontal: 4.0),
                     child: Column(

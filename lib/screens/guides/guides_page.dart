@@ -7,6 +7,58 @@ class _GuidesPage extends StatefulWidget {
 
 class __GuidesPageState extends State<_GuidesPage> {
 
+  String _platformVersion = 'Unknown';
+
+  final _contactNumbers={
+    "ng":"0800 9700 0010",
+    "ee":"112",
+    'us':"800-232-4636",
+    'ca':"911",
+    'gb':"999",
+    'au':'000',
+    'nz':'111',
+    'jp':'119',
+    'in':'112',
+    'fi':'112',
+    'it':'112',
+  };
+
+
+  @override
+  void initState(){
+    initPlatformState();
+    super.initState();
+  }
+
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      platformVersion = await FlutterSimCountryCode.simCountryCode;
+    } catch (error){
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion;
+    });
+  }
+
+  void contactEmergency(){
+    if(_contactNumbers.containsKey(_platformVersion)){
+      launch("tel:${_contactNumbers[_platformVersion]}");
+    }
+    else{
+      launch("tel:+41-22-7912111");
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,19 +116,6 @@ class __GuidesPageState extends State<_GuidesPage> {
                     context, MaterialPageRoute(builder: (_) => Article("How it spreads")));
               },
             ),
-//            SizedBox(
-//              height: 10,
-//            ),
-//            _InfoCard(
-//              title: "Prevention & treatment",
-//              subtitle: "Learn how to prevent Covid-19",
-//              icon: LineIcons.heartbeat,
-//              color: Colors.green[800],
-//              action: () {
-//                Navigator.push(
-//                    context, MaterialPageRoute(builder: (_) => Article("Prevention & treatment")));
-//              },
-//            ),
             SizedBox(
               height: 10,
             ),
@@ -102,6 +141,16 @@ class __GuidesPageState extends State<_GuidesPage> {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (_) => Article("What to do")));
               },
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            _InfoCard(
+              title: "Contact Emergency",
+              subtitle: "Contact local emergency service",
+              icon: LineIcons.phone,
+              color: Colors.green[800],
+              action: contactEmergency,
             ),
             SizedBox(
               height: 10,
