@@ -5,35 +5,31 @@ class _SummaryPage extends StatefulWidget {
   __SummaryPageState createState() => __SummaryPageState();
 }
 
-class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenContract {
-
-  int confirmed=0;
-  int recovered=0;
-  int deaths=0;
-  int newConfirmed=0;
-  int newRecovered=0;
-  int newDeaths=0;
+class __SummaryPageState extends State<_SummaryPage>
+    implements SummaryScreenContract {
+  int confirmed = 0;
+  int recovered = 0;
+  int deaths = 0;
+  int newConfirmed = 0;
+  int newRecovered = 0;
+  int newDeaths = 0;
   Totals prevData;
   String _platformVersion = 'Unknown';
 
   @override
   void initState() {
-
-    Preferences.getMap("data").then((Map res){
-
-      if(res!=null){
+    Preferences.getMap("data").then((Map res) {
+      if (res != null) {
         setState(() {
-          prevData=Totals.map(res);
-          confirmed=prevData.confirmed;
-          recovered=prevData.recovered;
-          deaths=prevData.deaths;
+          prevData = Totals.map(res);
+          confirmed = prevData.confirmed;
+          recovered = prevData.recovered;
+          deaths = prevData.deaths;
         });
-      }else{
+      } else {
         _refreshController.requestRefresh();
       }
-
-
-    }).catchError((error){
+    }).catchError((error) {
       print("error text: ${error.toString()}");
       _refreshController.requestRefresh();
     });
@@ -48,7 +44,7 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       platformVersion = await FlutterSimCountryCode.simCountryCode;
-    } catch (error){
+    } catch (error) {
       platformVersion = 'Failed to get platform version.';
     }
 
@@ -64,32 +60,33 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
 
   SummaryScreenPresenter _presenter;
 
-  __SummaryPageState(){
-    _presenter=new SummaryScreenPresenter(this);
+  __SummaryPageState() {
+    _presenter = new SummaryScreenPresenter(this);
   }
 
   RefreshController _refreshController =
-  RefreshController(initialRefresh: true);
+      RefreshController(initialRefresh: true);
 
-  void _onRefresh() async{
+  void _onRefresh() async {
     // monitor network fetch
     // if failed,use refreshFailed()
-    if(_platformVersion.length<4){
+
+    if (_platformVersion.length < 4) {
       await _presenter.getCountryDataByCode(_platformVersion);
-    }else{
+    } else {
       await _presenter.getTotal();
     }
 
 //    _refreshController.refreshCompleted();
   }
 
-  void _onLoading() async{
+  void _onLoading() async {
     // monitor network fetch
 //    await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use loadFailed(),if no data return,use LoadNodata()
-    if(_platformVersion.length<4){
+    if (_platformVersion.length < 4) {
       await _presenter.getCountryDataByCode(_platformVersion);
-    }else{
+    } else {
       await _presenter.getTotal();
     }
 //    _refreshController.loadComplete();
@@ -97,20 +94,26 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text('Covid-19',style: TextStyle(color: Colors.grey,fontSize: 24,fontWeight: FontWeight.bold)),
+        title: Text('Covid-19',
+            style: TextStyle(
+                color: Colors.grey, fontSize: 24, fontWeight: FontWeight.bold)),
         actions: <Widget>[
           IconButton(
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>Guides()));
+            onPressed: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => Guides()));
             },
-            icon: Icon(LineIcons.bars,color: Colors.black,size: 25,),
+            icon: Icon(
+              LineIcons.bars,
+              color: Colors.black,
+              size: 25,
+            ),
           )
         ],
       ),
@@ -127,9 +130,16 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('Reports - ${_platformVersion.length<4? _platformVersion.toUpperCase() : "Global"}',style: GoogleFonts.tauri(textStyle: TextStyle(color: Colors.black,fontSize: 34,fontWeight: FontWeight.normal))),
-
-              SizedBox(height: 10,),
+              Text(
+                  'Reports - ${_platformVersion.length < 4 ? _platformVersion.toUpperCase() : "Global"}',
+                  style: GoogleFonts.tauri(
+                      textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 34,
+                          fontWeight: FontWeight.normal))),
+              SizedBox(
+                height: 10,
+              ),
               GlobalSituationCard(
                 cardTitle: 'Confirmed CASES',
                 caseTitle: 'Confirmed',
@@ -140,9 +150,9 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
                 icon: Icon(LineIcons.arrow_up),
                 color: Colors.red,
               ),
-
-              SizedBox(height: 30,),
-
+              SizedBox(
+                height: 30,
+              ),
               GlobalSituationCard(
                 cardTitle: 'Recovered CASES',
                 caseTitle: 'Recovered',
@@ -152,9 +162,9 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
                 icon: Icon(LineIcons.arrow_up),
                 color: Colors.red,
               ),
-
-              SizedBox(height: 30,),
-
+              SizedBox(
+                height: 30,
+              ),
               GlobalSituationCard(
                 cardTitle: 'Death CASES',
                 caseTitle: 'Death',
@@ -165,46 +175,44 @@ class __SummaryPageState extends State<_SummaryPage> implements SummaryScreenCon
                 icon: Icon(LineIcons.arrow_up),
                 color: Colors.red,
               ),
-              SizedBox(height: 50,),
-
+              SizedBox(
+                height: 50,
+              ),
             ],
           ),
         ),
       ),
-
     );
   }
 
-  void showLoader(){
+  void showLoader() {
     _refreshController.isLoading;
   }
 
-  void hideLoader(){
+  void hideLoader() {
     _refreshController.refreshCompleted();
-
   }
 
-  void onSuccess(Totals total){    
-    if(Preferences.setMap('data', total.toMap())!=null){
+  void onSuccess(Totals total) {
+    if (Preferences.setMap('data', total.toMap()) != null) {
       setState(() {
-        newConfirmed=confirmed==0 ? 0 : total.confirmed-confirmed;
-        newRecovered=recovered==0 ? 0 : total.recovered-recovered;
-        newDeaths=deaths==0 ? 0 : total.deaths-deaths;
-        confirmed=total.confirmed;
-        recovered=total.recovered;
-        deaths=total.deaths;
+        newConfirmed = confirmed == 0 ? 0 : total.confirmed - confirmed;
+        newRecovered = recovered == 0 ? 0 : total.recovered - recovered;
+        newDeaths = deaths == 0 ? 0 : total.deaths - deaths;
+        confirmed = total.confirmed;
+        recovered = total.recovered;
+        deaths = total.deaths;
       });
     }
   }
 
-  void onError(String error){
+  void onError(String error) {
     _refreshController.refreshFailed();
     print("error from summary: $error");
   }
 }
 
 class _InfoBox extends StatelessWidget {
-  
   Color color;
   Color accentColor;
   String title;
@@ -212,8 +220,13 @@ class _InfoBox extends StatelessWidget {
   String totalCases;
   String newCases;
 
-  _InfoBox({this.color,this.accentColor,this.title,this.totalCases,this.newCases});
-  
+  _InfoBox(
+      {this.color,
+      this.accentColor,
+      this.title,
+      this.totalCases,
+      this.newCases});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -229,30 +242,60 @@ class _InfoBox extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(8.0),
-            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),color: accentColor),
-            child: Text("$title Cases", style: TextStyle(color: Colors.white,fontSize: 16,),),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                color: accentColor),
+            child: Text(
+              "$title Cases",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+            ),
           ),
-          SizedBox(height:10),
+          SizedBox(height: 10),
           Row(
             children: <Widget>[
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(totalCases, style: TextStyle(color: Colors.white,fontSize: 24,),),
-                    SizedBox(height:10),
-                    Text("Total", style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold)),
+                    Text(
+                      totalCases,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text("Total",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(newCases, style: TextStyle(color: Colors.white,fontSize: 24,),),
-                    SizedBox(height:10),
-                    Text("New", style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold)),
+                    Text(
+                      newCases,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text("New",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -276,14 +319,14 @@ class GlobalSituationCard extends StatelessWidget {
 
   const GlobalSituationCard(
       {Key key,
-        @required this.cardTitle,
-        @required this.caseTitle,
-        @required this.currentData,
-        @required this.newData,
-        @required this.percentChange,
-        this.icon,
-        this.cardColor = Colors.green,
-        @required this.color})
+      @required this.cardTitle,
+      @required this.caseTitle,
+      @required this.currentData,
+      @required this.newData,
+      @required this.percentChange,
+      this.icon,
+      this.cardColor = Colors.green,
+      @required this.color})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -319,29 +362,25 @@ class GlobalSituationCard extends StatelessWidget {
                           height: 40,
                           margin: EdgeInsets.all(15),
                           padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 17),
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 17),
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: Colors.black26,
                               borderRadius: BorderRadius.circular(5)),
                           child: RichText(
-                              text:
-                              TextSpan(
-                                text: "$cardTitle"
-                                    .toUpperCase(),
-                                style: GoogleFonts.cabin(
-                                  textStyle: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              )
-
-                          ),
+                              text: TextSpan(
+                            text: "$cardTitle".toUpperCase(),
+                            style: GoogleFonts.cabin(
+                              textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          )),
                         ),
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left:20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Row(
                         children: <Widget>[
                           Column(
@@ -452,4 +491,3 @@ class GlobalSituationCard extends StatelessWidget {
     );
   }
 }
-
